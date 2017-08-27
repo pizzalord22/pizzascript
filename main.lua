@@ -1,100 +1,102 @@
--- Pizza script v1
--- add
--- -------------
--- 1. working halo esp
--- 2. playername esp
--- 3. distance to player esp
--- 4. player user_group esp
+-- Pizza script created by Professional Pizza
+--
+-- ideas
+-- chat spam
+-- ----------------
+-- Custom message
+-- advertisement
+-- admin chat spam
+--
+-- credits
+-- -noono
+-- -GAY
 
-function main()
-  chat.AddText( Color( 0, 0, 0 ), "[", Color( 30, 220, 0 ), " pizza v0.01 started ", Color( 0, 0, 0 ), "]" )  
-  bhop = 0
-  esp = 0
-end
+-- server commands
+-- concommand.Add( "retrieveplayers", function()
+--   for _, ply in ipairs( player.GetAll() ) do
+--    print( ply:Nick() .. ", " .. ply:SteamID() .. "\n" )
+--  end
+-- end )
 
-concommand.Add ("pizza_menu", function()
-local Frame = vgui.Create( "DFrame" )
-  Frame:SetTitle( "Pizza v0.1" )
-  Frame:SetVisible( true )
-  Frame:SetDraggable( true )
-  Frame:ShowCloseButton( true )
-  Frame:SetSize( 300, 150)
-  Frame:Center() 
-  Frame:MakePopup()
+-- client commands
+
+-- create a menu
+concommand.Add( "pizza_menu", function()
+  -- set the Text color for the button
+  local TextColor = 78, 215, 42
   
-  local Button = vgui.Create( "DButton", Frame )
-  Button:SetText( "Toggle bhop" )
-  Button:SetTextColor( Color( 255, 255, 255 ) )
-  Button:SetPos( 5, 5 )
-  Button:SetSize( 100, 30 )
-  Button.Paint = function( self, w, h )
+  -- create a DFrame
+  local Frame = vgui.Create( "DFrame" )
+  Frame.SetTitle( "Pizza script v0.01" ) -- user:" .. LocalPlayer():Nick()
+  Frame.Center()
+  Frame.SetSize( 300, 300 )
+  Frame.MakePopup()
+   
+  -- Create the button that toggles bhopping
+  local Bhop = vgui.Create( "DButton", Frame)
+  Bhop:SetText( "Bhop toggle" )
+  Bhop.SetTextColor( TextColor )
+  Bhop:SetSize( 100, 30 )
+  Bhop:SetPos( 5, 5 )
+  Bhop.Paint = function( self, w, h )
     draw.RoundedBox( 0, 0, 0, w, h, Color( 41, 128, 185, 250 ) ) -- Draw a blue button
   end
   
-  local ButtonEsp = vgui.Create( "DButton", Frame )
-  ButtonEsp:SetText( "Toggle esp" )
-  ButtonEsp:SetTextColor( Color( 255, 255, 255 ) )
-  ButtonEsp:SetPos(5,40)
-  ButtonEsp:SetSize( 100, 30 )
-  ButtonEsp.Paint = function( self, w, h )
+  -- Create the button for toggling the spam
+  local Spam = vgui.Create( "DTextEntry", Frame )
+  Spam:SetText( "Spam message" )
+  Spam:SetTextColor( TextColor )
+  Spam:SetSize( 100, 30 )
+  Spam:SetPos(5, 40)
+  Spam.Paint = function( self, w, h )
     draw.RoundedBox( 0, 0, 0, w, h, Color( 41, 128, 185, 250 ) ) -- Draw a blue button
   end
   
-  local ButtonEspPlus = vgui.Create ( "DButton", Frame )
-  ButtonEspPlus:SetText( "Toggle esp+" )
-  ButtonEspPlus:SetTextColor( Color( 255, 255, 255 ) )
-  ButtonEspPlus:SetPos(5,75)
-  ButtonEspPlus:SetSize( 100, 30 )
-  ButtonEspPlus.Paint = function( self, w, h )
+  local SpamMSG = vgui.Create( "DButton", Frame )
+  SpamMSG:SetSize( 100, 30 )
+  SpamMSG:SetPos( 5, 70 )
+  SpamMSG:SetText( "spam message" )
+  NameEntry.OnEnter = function( self )
+    MSG = self:GetValue()
+    print( "Spam message: " .. MSG )
+  end
+  SpamMSG.Paint = function( self, w, h )
     draw.RoundedBox( 0, 0, 0, w, h, Color( 41, 128, 185, 250 ) ) -- Draw a blue button
   end
   
-  
-  Button.DoClick = function()
-    if bhop == 1 then
-      bhop = 0
-      hook.Add("Think", "bunnyHop", bunnyHop )
-    else
+  Bhop.DoClick = function()
+    if bhop == 0 then
       bhop = 1
-      hook.remove("Think", "bunnyHop")
-    end
-  end
-  
-  ButtonEsp.DoClick = function()
-    if esp == 1 then
-      hook.Remove( "PreDrawHalos", "esp" )
-      esp = 0
     else
-      esp = 1
-      hook.Add( "PreDrawHalos", "esp", function()
-        halo.Add( player.GetAll(), Color( 33, 210, 210 ), 0, 0, 2, true, true )
-      end )
+      bhop = 0
+      bhop()
     end
   end
   
-  ButtonEspPlus.DoClick = function()
-    for k, v in pairs( player.GetAll() ) do
-      print(k, v:Nick())    
+  Spam.DoClick = function()
+    if spam == 0 then
+      spam = 1
+      hook.Remove("spamhook")
+    else
+      spam = 0
+      hook.Add( "Think", "spamhook", spamChat )
     end
-    chat.AddText( Color( 0, 0, 0 ), "[", Color( 30, 220, 0 ), " Look in the console ", Color( 0, 0, 0 ), "]" )  
   end
-end)
+    
+  -- ply.AddText( Color( 0, 0, 0 ), "[ ", Color( 78, 215, 42 ), ply," opend the menu ", Color( 0, 0, 0 ), "]" )
+end )
 
-function bunnyHop()
-  if bhop == 1 then
-    if input.IsKeyDown(KEY_SPACE) then
-      if LocalPlayer():OnGround() then
-        RunConsoleCommand("+jump")
-        timer.Create("Bhop", 0, 0.01, function()
-          RunConsoleCommand("-jump")
-        end )
-      end
-    end
-  end
+
+local function bhop()
+  
 end
 
-
-main()
-
-
+local function spamChat()
+  LocalPlayer():ConCommand ( "say ".. msg )
+  if spam == 1 then
+    timer.Create("Spamming", 1,0, Spam)
+  elseif spam == 0 then
+    timer.remove( "Spamming" )
+  end
+end
 
