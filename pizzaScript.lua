@@ -6,12 +6,20 @@
 --[[
   pizza script v0.02
   created by: professional pizza
+  ==========================
+  ||         todo         ||
+  ==========================
   -- make a persistent menu that does not get recreated every single time
   -- functionality:
   -- Bhop
   -- ESP
   -- aimbot
   -- spambot
+
+  ==========================
+  ||         ideas        ||
+  ==========================
+  -- change button text color depending on the background color for better readability
 ]]
 
 -- create vars
@@ -35,19 +43,23 @@ function main()
 end
 
 --- create a menu command and a menu
-concommand.Add ("pizza_menu", function()
+concommand.Add ( "pizza_menu", function()
     --- set the color for the buttons
     local textColor = Color( 255, 255, 255 )
     local offColor = Color( 53, 70, 175 )
     local onColor = Color( 84, 216, 42 )
 
-    -- create row vars
+    --- create row vars ( y distance in pixels )
     local rowOne = 30
     local rowTwo = 75
 
-    --- create line vars
+    --- create line vars ( x distance in pixels )
     local lineOne = 10
     local lineTwo = 120
+
+    --- create text colors
+    local ButtonTextColorON = Color( 0, 0, 0 )
+    local ButtonTextColorOFF = Color( 255, 255, 255 )
 
     --- create a Frame for the menu
     local Frame = vgui.Create( "DFrame" )
@@ -66,11 +78,13 @@ concommand.Add ("pizza_menu", function()
     local BhopButton = vgui.Create( "DButton", Frame )
     if GetConVarNumber( "Bhop" ) == 0 then
         BhopButton:SetText( "Bhop OFF")
+        BhopButton:SetTextColor( ButtonTextColorOFF )
         BhopButton.Paint = function( self, w, h )
             draw.RoundedBox( 0, 0, 0, w, h, offColor ) -- Draw a blue button
         end
     elseif GetConVarNumber( "Bhop" ) == 1 then
         BhopButton:SetText( "Bhop ON" )
+        BhopButton:SetTextColor( ButtonTextColorON )
         BhopButton.Paint = function( self, w, h )
             draw.RoundedBox( 0, 0, 0, w, h, onColor ) -- Draw a green button
         end
@@ -84,11 +98,13 @@ concommand.Add ("pizza_menu", function()
     local SpamButton = vgui.Create( "DButton", Frame  )
     if GetConVarNumber( "spambot" ) == 0 then
         SpamButton:SetText( "spam OFF" )
+        SpamButton:SetTextColor( ButtonTextColorOFF )
         SpamButton.Paint = function( self, w, h )
             draw.RoundedBox( 0, 0, 0, w, h, offColor ) -- Draw a blue button
         end
     elseif GetConVarNumber( "spambot" ) == 1 then
         SpamButton:SetText( "spam ON" )
+        SpamButton:SetTextColor( ButtonTextColorON )
         SpamButton.Paint = function( self, w, h )
             draw.RoundedBox( 0, 0, 0, w, h, onColor ) -- Draw a green button
         end
@@ -161,6 +177,7 @@ local function aimbot()
     --- find the nearest player
     --- check if the targeted player is in the players team
     --- check if the targeted player is in the players friendlist
+    --- if the above is true aim at the player
 end
 
 --- create spambot function
@@ -170,6 +187,7 @@ local function spambot()
     end
 end
 
+main()
 --- add the hooks that should always be on to avoid troubles
 --- might need to be changed to add/remove hooks on button presses
 --- if it takes to much cpu
