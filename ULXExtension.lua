@@ -100,17 +100,7 @@ Category: Menus
 
 ]]
 
-concommand.Add( "ulx_menu", function()
 
-    local Frame = vgui.Create( "DFrame" )
-    Frame:SetTitle( "ulx extension    user: " .. LocalPlayer():Nick() )
-    Frame:SetVisible( true )
-    Frame:SetDraggable( true )
-    Frame:ShowCloseButton( true )
-    Frame:SetSize( 500, 500 )
-    Frame:Center()
-    Frame:MakePopup()
-    Frame.paint = function( self, w, h )
-        draw.RoundedBox( 0, 0, 0, w, h, Color( 0, 0, 0 ) )
-    end
-end)
+--- if an admin uses a command print it to everyone that has an higher rank
+--- if possible add the admins name when he uses a command eg: !ban player durationmsg+| kicked by (admin name)
+
