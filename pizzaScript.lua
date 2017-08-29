@@ -55,7 +55,7 @@ concommand.Add ("pizza_menu", function()
     Frame:SetVisible( true )
     Frame:SetDraggable( true )
     Frame:ShowCloseButton( true )
-    Frame:SetSize( 300, 200)
+    Frame:SetSize( 400, 150)
     Frame:Center()
     Frame:MakePopup()
     Frame.Paint = function()
@@ -133,10 +133,10 @@ concommand.Add ("pizza_menu", function()
     end
 
     --- create input field for the spambot
-    local SpamMessaage = vgui.Create( "DTextEntry", frame ) -- create the form as a child of frame
+    local SpamMessaage = vgui.Create( "DTextEntry", Frame ) -- create the form as a child of frame
     SpamMessaage:SetPos( lineTwo, rowTwo )
     SpamMessaage:SetSize( 100, 30 )
-    SpamMessaage:SetText( "Sample String" )
+    SpamMessaage:SetText( "Spam message" )
     SpamMessaage.OnEnter = function( self )
         RunConsoleCommand( "message", self:GetValue())
     end
