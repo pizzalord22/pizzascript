@@ -158,7 +158,9 @@ end
 
 --- create aimbot function
 local function aimbot()
-
+    --- find the nearest player
+    --- check if the targeted player is in the players team
+    --- check if the targeted player is in the players friendlist
 end
 
 --- create spambot function
