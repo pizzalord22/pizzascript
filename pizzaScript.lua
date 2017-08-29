@@ -23,10 +23,13 @@
 ]]
 
 -- create vars
+-- 1 is on, 0 is off (1 = true, 0 = false)
 pizza = {
     CreateClientConVar( "Bhop", "1", true, false ),
     CreateClientConVar( "esp", "0", true, false ),
     CreateClientConVar( "aimbot", "0", true, false ),
+    CreateClientConVar( "aimtbotShootTeam", "1", true, false ),
+    CreateClientConVar( "aimtbotShootBuddy", "1", true, false ),
     CreateClientConVar( "spambot", "0", true, false ),
     CreateClientConVar( "message", "message", true, false )
 }
@@ -43,7 +46,7 @@ function main()
 end
 
 --- create a menu command and a menu
-concommand.Add ( "pizza_menu", function()
+concommand.Add( "pizza_menu", function()
     --- set the color for the buttons
     local textColor = Color( 255, 255, 255 )
     local offColor = Color( 53, 70, 175 )
@@ -71,7 +74,7 @@ concommand.Add ( "pizza_menu", function()
     Frame:Center()
     Frame:MakePopup()
     Frame.Paint = function()
-        draw.RoundedBox( 8, 0, 0, Frame:GetWide(), Frame:GetTall(), Color( 0, 0, 0 ) )
+        draw.RoundedBox( 0, 0, 0, Frame:GetWide(), Frame:GetTall(), Color( 0, 0, 0 ) )
     end
 
     --- create bunny hop button
@@ -141,7 +144,7 @@ concommand.Add ( "pizza_menu", function()
             RunConsoleCommand( "spambot", "1" )
         elseif GetConVarNumber( "spambot" ) == 1 then
             SpamButton:SetText( "spam OFF" )
-            SpamButton.Paint = function ( self, w, h )
+            SpamButton.Paint = function( self, w, h )
                 draw.RoundedBox( 0, 0, 0, w, h, offColor )
             end
             RunConsoleCommand( "spambot", "0" )
@@ -172,12 +175,32 @@ local function Bhop()
     end
 end
 
+local function esp()
+    if GetConVarNumber("esp") == 1 then
+        for k, v in pairs ( player.GetAll() ) do
+            local plypos = (v:GetPos() + Vector(0,0,80)):ToScreen()
+            if v:IsAdmin() or v:IsSuperAdmin() then
+                draw.DrawText( "" ..v:Name().. "[Admin]", "TabLarge", plypos.x, plypos.y, Color(220,60,90,255), 1 )
+            else
+                draw.DrawText( v:Name(), "Trebuchet18", plypos.x, plypos.y, Color(255,255,255), 1 )
+            end
+        end
+    end
+end
+
 --- create aimbot function
 local function aimbot()
     --- find the nearest player
-    --- check if the targeted player is in the players team
-    --- check if the targeted player is in the players friendlist
-    --- if the above is true aim at the player
+    --- if shoot team mates and shoot buddys are on then
+    if GetConVarNumber( "aimbotShootTeam" ) == 1 and GetConVarNumber( "aimbotShootBuddy" ) == 1 then
+    --- if shoot team mates is on and shoot buddy is off then
+    elseif GetConVarNumber( "aimbotShootTeam") == 1 and GetConVarNumber( "aimbotShootBuddy" ) == 0 then
+    --- if shoot team mates is off and shoot buddy is on then
+    elseif GetConVarNumber( "aimbotShootTeam") == 0 and GetConVarNumber( "aimbotShootBuddy" ) == 1 then
+    --- if shoot team mates and shoot buddy's are off then
+    elseif GetConVarNumber( "aimbotShootTeam") == 0 and GetConVarNumber( "aimbotShootBuddy" ) == 0 then
+
+    end
 end
 
 --- create spambot function
@@ -194,3 +217,4 @@ main()
 hook.Add( "Think", "BunnyHop", Bhop )
 hook.Add( "Think", "aimbot", aimbot )
 hook.Add( "Think", "spambot", spambot )
+hook.Add( "HUDPaint", "esp", esp )
