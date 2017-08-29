@@ -6,8 +6,6 @@
 --[[
   pizza script v0.02
   created by: professional pizza
-
-
   -- make a persistent menu that does not get recreated every single time
   -- functionality:
   -- Bhop
@@ -18,11 +16,11 @@
 
 -- create vars
 pizza = {
-  CreateClientConVar( "Bhop", "1", true, false ),
-  CreateClientConVar( "esp", "1", true, false ),
-  CreateClientConVar( "aimbot", "1", true, false ),
-  CreateClientConVar( "spambot", "1", true, false ),
-  CreateClientConVar( "message", "test", true, false )
+    CreateClientConVar( "Bhop", "1", true, false ),
+    CreateClientConVar( "esp", "0", true, false ),
+    CreateClientConVar( "aimbot", "0", true, false ),
+    CreateClientConVar( "spambot", "0", true, false ),
+    CreateClientConVar( "message", "message", true, false )
 }
 print( "bhop: " .. GetConVarNumber( "Bhop" ) )
 print( "esp: " .. GetConVarNumber( "esp" ) )
@@ -32,8 +30,8 @@ print( "message: " .. GetConVarString( "message" ) )
 
 --- create a text when the hack is loaded
 function main()
-  chat.AddText( Color( 0, 0, 0 ), "[", Color( 30, 220, 0 ), " pizza v0.02 started ", Color( 0, 0, 0 ), "]" )
-  chat.AddText( Color( 0, 0, 0 ), "[", Color( 30, 220, 0 ), " have fun =) ", Color( 0, 0, 0 ), "]" )
+    chat.AddText( Color( 0, 0, 0 ), "[", Color( 30, 220, 0 ), " pizza v0.02 started ", Color( 0, 0, 0 ), "]" )
+    chat.AddText( Color( 0, 0, 0 ), "[", Color( 30, 220, 0 ), " have fun =) ", Color( 0, 0, 0 ), "]" )
 end
 
 --- create a menu command and a menu
@@ -43,20 +41,31 @@ concommand.Add ("pizza_menu", function()
     local offColor = Color( 53, 70, 175 )
     local onColor = Color( 84, 216, 42 )
 
+    -- create row vars
+    local rowOne = 30
+    local rowTwo = 75
+
+    --- create line vars
+    local lineOne = 10
+    local lineTwo = 120
+
     --- create a Frame for the menu
     local Frame = vgui.Create( "DFrame" )
     Frame:SetTitle( "Pizza V0.02    user: " .. LocalPlayer():Nick() )
     Frame:SetVisible( true )
     Frame:SetDraggable( true )
     Frame:ShowCloseButton( true )
-    Frame:SetSize( 500, 200)
+    Frame:SetSize( 300, 200)
     Frame:Center()
     Frame:MakePopup()
+    Frame.Paint = function()
+        draw.RoundedBox( 8, 0, 0, Frame:GetWide(), Frame:GetTall(), Color( 0, 0, 0 ) )
+    end
 
     --- create bunny hop button
     local BhopButton = vgui.Create( "DButton", Frame )
     if GetConVarNumber( "Bhop" ) == 0 then
-        BhopButton:SetText( "Bhop OFF", "MyFont")
+        BhopButton:SetText( "Bhop OFF")
         BhopButton.Paint = function( self, w, h )
             draw.RoundedBox( 0, 0, 0, w, h, offColor ) -- Draw a blue button
         end
@@ -68,8 +77,26 @@ concommand.Add ("pizza_menu", function()
     end
     BhopButton:SetTextColor( textColor )
     BhopButton:SetFont( "Trebuchet20" )
-    BhopButton:SetPos( 5, 30 )
+    BhopButton:SetPos( lineOne, rowOne )
     BhopButton:SetSize( 100, 30 )
+
+    --- create spam button
+    local SpamButton = vgui.Create( "DButton", Frame  )
+    if GetConVarNumber( "spambot" ) == 0 then
+        SpamButton:SetText( "spam OFF" )
+        SpamButton.Paint = function( self, w, h )
+            draw.RoundedBox( 0, 0, 0, w, h, offColor ) -- Draw a blue button
+        end
+    elseif GetConVarNumber( "spambot" ) == 1 then
+        SpamButton:SetText( "spam ON" )
+        SpamButton.Paint = function( self, w, h )
+            draw.RoundedBox( 0, 0, 0, w, h, onColor ) -- Draw a green button
+        end
+    end
+    SpamButton:SetTextColor( textColor )
+    SpamButton:SetFont( "Trebuchet20" )
+    SpamButton:SetPos( lineOne, rowTwo )
+    SpamButton:SetSize( 100, 30 )
 
     --- create an action to do when the Bhop button is pressed
     BhopButton.DoClick = function()
@@ -78,14 +105,40 @@ concommand.Add ("pizza_menu", function()
             BhopButton.Paint = function( self, w, h )
                 draw.RoundedBox( 0, 0, 0, w, h, onColor ) -- Draw a green button
             end
-            RunConsoleCommand("Bhop", "1")
+            RunConsoleCommand( "Bhop", "1" )
         elseif GetConVarNumber( "Bhop" ) == 1 then
             BhopButton:SetText( "Bhop OFF" )
             BhopButton.Paint = function( self, w, h )
                 draw.RoundedBox( 0, 0, 0, w, h, offColor ) -- Draw a blue button
             end
-            RunConsoleCommand("Bhop", "0")
+            RunConsoleCommand( "Bhop", "0" )
         end
+    end
+
+    --- create an action to do when the spam button is clicked
+    SpamButton.DoClick = function()
+        if GetConVarNumber( "spambot" ) == 0 then
+            SpamButton:SetText( "spam ON" )
+            SpamButton.Paint = function( self, w, h )
+                draw.RoundedBox( 0, 0, 0, w, h, onColor ) -- Draw a green button
+            end
+            RunConsoleCommand( "spambot", "1" )
+        elseif GetConVarNumber( "spambot" ) == 1 then
+            SpamButton:SetText( "spam OFF" )
+            SpamButton.Paint = function ( self, w, h )
+                draw.RoundedBox( 0, 0, 0, w, h, offColor )
+            end
+            RunConsoleCommand( "spambot", "0" )
+        end
+    end
+
+    --- create input field for the spambot
+    local SpamMessaage = vgui.Create( "DTextEntry", frame ) -- create the form as a child of frame
+    SpamMessaage:SetPos( lineTwo, rowTwo )
+    SpamMessaage:SetSize( 100, 30 )
+    SpamMessaage:SetText( "Sample String" )
+    SpamMessaage.OnEnter = function( self )
+        RunConsoleCommand( "message", self:GetValue())
     end
 end)
 
@@ -121,5 +174,3 @@ end
 hook.Add( "Think", "BunnyHop", Bhop )
 hook.Add( "Think", "aimbot", aimbot )
 hook.Add( "Think", "spambot", spambot )
-
-main()
