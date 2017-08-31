@@ -72,7 +72,7 @@ concommand.Add( "pizza_menu", function()
     Frame:SetVisible( true )
     Frame:SetDraggable( true )
     Frame:ShowCloseButton( true )
-    Frame:SetSize( 400, 150)
+    Frame:SetSize( 400, 200)
     Frame:Center()
     Frame:MakePopup()
     Frame.Paint = function()
@@ -177,6 +177,22 @@ concommand.Add( "pizza_menu", function()
         end
     end
 
+    EspButton.DoClick = function()
+        if GetConVarNumber( "esp" ) == 0 then
+            EspButton:SetText( "esp ON" )
+            EspButton.Paint = function( self, w, h)
+                draw.RoundedBox( 0, 0, 0, w, h, onColor)
+            end
+            RunConsoleCommand( "esp", "1" )
+        elseif GetConVarNumber( "esp" ) == 1 then
+            EspButton:SetText( "esp OFF" )
+            EspButton.Paint = function( self, w, h )
+                draw.RoundedBox( 0, 0, 0, w, h, offColor)
+            end
+            RunConsoleCommand( "esp", "0" )
+        end
+    end
+
 end)
 
 --- create bhop function
@@ -198,9 +214,9 @@ local function esp()
         for k, v in pairs ( player.GetAll() ) do
             local plypos = (v:GetPos() + Vector(0,0,40)):ToScreen()
             if v:IsAdmin() or v:IsSuperAdmin() then
-                draw.DrawText( "" ..v:Name().. "\n[Admin]", "TabLarge", plypos.x, plypos.y, Color(220,60,90,255), 1 )
+                draw.DrawText( "" ..v:Name().. "\n" .. team.GetName(v:Team()) .. "\n[Admin]", "TabLarge", plypos.x, plypos.y, Color(220,60,90,255), 1 )
             else
-                draw.DrawText( v:Name(), "Trebuchet18", plypos.x, plypos.y, Color(255,255,255), 1 )
+                draw.DrawText( v:Name() .. "\n" .. team.GetName(v:Team()), "Trebuchet18", plypos.x, plypos.y, Color(255,255,255), 1 )
             end
         end
     end
@@ -236,11 +252,3 @@ hook.Add( "Think", "BunnyHop", Bhop )
 hook.Add( "Think", "aimbot", aimbot )
 hook.Add( "Think", "spambot", spambot )
 hook.Add( "HUDPaint", "esp", esp )
---[[
-hook.Add ("HUDPaint", "esp", function()
-    for k , v in pairs (player.GetAll()) do
-        pos = v:GetPos():ToScreen()
-        draw.DrawText(v:Nick(), "TargetID" ,pos.x, pos.y, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER )
-    end
-end)
-]]
