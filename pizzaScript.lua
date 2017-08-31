@@ -55,10 +55,12 @@ concommand.Add( "pizza_menu", function()
     --- create row vars ( y distance in pixels )
     local rowOne = 30
     local rowTwo = 75
+    local rowThree = 120
 
     --- create line vars ( x distance in pixels )
     local lineOne = 10
     local lineTwo = 120
+    local lineThree = 230
 
     --- create text colors
     local ButtonTextColorON = Color( 0, 0, 0 )
@@ -92,7 +94,6 @@ concommand.Add( "pizza_menu", function()
             draw.RoundedBox( 0, 0, 0, w, h, onColor ) -- Draw a green button
         end
     end
-    BhopButton:SetTextColor( textColor )
     BhopButton:SetFont( "Trebuchet20" )
     BhopButton:SetPos( lineOne, rowOne )
     BhopButton:SetSize( 100, 30 )
@@ -112,11 +113,36 @@ concommand.Add( "pizza_menu", function()
             draw.RoundedBox( 0, 0, 0, w, h, onColor ) -- Draw a green button
         end
     end
-    SpamButton:SetTextColor( textColor )
     SpamButton:SetFont( "Trebuchet20" )
     SpamButton:SetPos( lineOne, rowTwo )
     SpamButton:SetSize( 100, 30 )
 
+    local EspButton = vgui.Create( "DButton", Frame )
+    if GetConVarNumber( "esp" ) == 0 then
+        EspButton:SetText( "esp OFF" )
+        EspButton:SetTextColor( ButtonTextColorOFF )
+        EspButton.Paint = function( self, w, h )
+            draw.RoundedBox( 0, 0, 0, w, h, offColor )
+        end
+    elseif GetConVarNumber( "esp" ) == 1 then
+        EspButton:SetText( "esp ON" )
+        EspButton:SetTextColor( ButtonTextColorON )
+        EspButton.Paint = function( self, w, h )
+            draw.RoundedBox( 0, 0, 0, w, h, onColor )
+        end
+    end
+    EspButton:SetFont( "Trebuchet20" )
+    EspButton:SetPos( lineThree, rowThree )
+    EspButton:SetSize( 100, 30 )
+
+    --- create input field for the spambot
+    local SpamMessaage = vgui.Create( "DTextEntry", Frame ) -- create the form as a child of frame
+    SpamMessaage:SetPos( lineTwo, rowTwo )
+    SpamMessaage:SetSize( 100, 30 )
+    SpamMessaage:SetText( GetConVarString( "message" ) )
+    SpamMessaage.OnEnter = function( self )
+        RunConsoleCommand( "message", self:GetValue())
+    end
     --- create an action to do when the Bhop button is pressed
     BhopButton.DoClick = function()
         if GetConVarNumber( "Bhop" ) == 0 then
@@ -151,14 +177,6 @@ concommand.Add( "pizza_menu", function()
         end
     end
 
-    --- create input field for the spambot
-    local SpamMessaage = vgui.Create( "DTextEntry", Frame ) -- create the form as a child of frame
-    SpamMessaage:SetPos( lineTwo, rowTwo )
-    SpamMessaage:SetSize( 100, 30 )
-    SpamMessaage:SetText( "Spam message" )
-    SpamMessaage.OnEnter = function( self )
-        RunConsoleCommand( "message", self:GetValue())
-    end
 end)
 
 --- create bhop function

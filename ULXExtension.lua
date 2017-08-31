@@ -103,4 +103,3 @@ Category: Menus
 
 --- if an admin uses a command print it to everyone that has an higher rank
 --- if possible add the admins name when he uses a command eg: !ban player durationmsg+| kicked by (admin name)
-
