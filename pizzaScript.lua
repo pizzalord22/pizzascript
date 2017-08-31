@@ -193,11 +193,11 @@ local function aimbot()
     --- find the nearest player
     --- if shoot team mates and shoot buddys are on then
     if GetConVarNumber( "aimbotShootTeam" ) == 1 and GetConVarNumber( "aimbotShootBuddy" ) == 1 then
-    --- if shoot team mates is on and shoot buddy is off then
+        --- if shoot team mates is on and shoot buddy is off then
     elseif GetConVarNumber( "aimbotShootTeam") == 1 and GetConVarNumber( "aimbotShootBuddy" ) == 0 then
-    --- if shoot team mates is off and shoot buddy is on then
+        --- if shoot team mates is off and shoot buddy is on then
     elseif GetConVarNumber( "aimbotShootTeam") == 0 and GetConVarNumber( "aimbotShootBuddy" ) == 1 then
-    --- if shoot team mates and shoot buddy's are off then
+        --- if shoot team mates and shoot buddy's are off then
     elseif GetConVarNumber( "aimbotShootTeam") == 0 and GetConVarNumber( "aimbotShootBuddy" ) == 0 then
 
     end
@@ -218,3 +218,11 @@ hook.Add( "Think", "BunnyHop", Bhop )
 hook.Add( "Think", "aimbot", aimbot )
 hook.Add( "Think", "spambot", spambot )
 hook.Add( "HUDPaint", "esp", esp )
+--[[
+hook.Add ("HUDPaint", "esp", function()
+    for k , v in pairs (player.GetAll()) do
+        pos = v:GetPos():ToScreen()
+        draw.DrawText(v:Nick(), "TargetID" ,pos.x, pos.y, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER )
+    end
+end)
+]]
