@@ -9,12 +9,12 @@
   ==========================
   ||         todo         ||
   ==========================
-  -- make a persistent menu that does not get recreated every single time
+  -- make a persistent menu that does not get recreated every single time works
   -- functionality:
-  -- Bhop
-  -- ESP
-  -- aimbot
-  -- spambot
+  -- Bhop       works
+  -- ESP        works
+  -- aimbot     WIP
+  -- spambot    works
 
   ==========================
   ||         ideas        ||
@@ -132,7 +132,7 @@ concommand.Add( "pizza_menu", function()
         end
     end
     EspButton:SetFont( "Trebuchet20" )
-    EspButton:SetPos( lineThree, rowThree )
+    EspButton:SetPos( lineOne, rowThree )
     EspButton:SetSize( 100, 30 )
 
     --- create input field for the spambot
@@ -196,9 +196,9 @@ end
 local function esp()
     if GetConVarNumber("esp") == 1 then
         for k, v in pairs ( player.GetAll() ) do
-            local plypos = (v:GetPos() + Vector(0,0,80)):ToScreen()
+            local plypos = (v:GetPos() + Vector(0,0,40)):ToScreen()
             if v:IsAdmin() or v:IsSuperAdmin() then
-                draw.DrawText( "" ..v:Name().. "[Admin]", "TabLarge", plypos.x, plypos.y, Color(220,60,90,255), 1 )
+                draw.DrawText( "" ..v:Name().. "\n[Admin]", "TabLarge", plypos.x, plypos.y, Color(220,60,90,255), 1 )
             else
                 draw.DrawText( v:Name(), "Trebuchet18", plypos.x, plypos.y, Color(255,255,255), 1 )
             end
