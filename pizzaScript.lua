@@ -62,10 +62,6 @@ concommand.Add( "pizza_menu", function()
     local lineTwo = 120
     local lineThree = 230
 
-    --- create text colors
-    local ButtonTextColorON = Color( 0, 0, 0 )
-    local ButtonTextColorOFF = Color( 255, 255, 255 )
-
     --- create a Frame for the menu
     local Frame = vgui.Create( "DFrame" )
     Frame:SetTitle( "Pizza V0.02    user: " .. LocalPlayer():Nick() )
@@ -83,17 +79,16 @@ concommand.Add( "pizza_menu", function()
     local BhopButton = vgui.Create( "DButton", Frame )
     if GetConVarNumber( "Bhop" ) == 0 then
         BhopButton:SetText( "Bhop OFF")
-        BhopButton:SetTextColor( ButtonTextColorOFF )
         BhopButton.Paint = function( self, w, h )
             draw.RoundedBox( 0, 0, 0, w, h, offColor ) -- Draw a blue button
         end
     elseif GetConVarNumber( "Bhop" ) == 1 then
         BhopButton:SetText( "Bhop ON" )
-        BhopButton:SetTextColor( ButtonTextColorON )
         BhopButton.Paint = function( self, w, h )
             draw.RoundedBox( 0, 0, 0, w, h, onColor ) -- Draw a green button
         end
     end
+    BhopButton:SetTextColor( textColor )
     BhopButton:SetFont( "Trebuchet20" )
     BhopButton:SetPos( lineOne, rowOne )
     BhopButton:SetSize( 100, 30 )
@@ -102,17 +97,16 @@ concommand.Add( "pizza_menu", function()
     local SpamButton = vgui.Create( "DButton", Frame  )
     if GetConVarNumber( "spambot" ) == 0 then
         SpamButton:SetText( "spam OFF" )
-        SpamButton:SetTextColor( ButtonTextColorOFF )
         SpamButton.Paint = function( self, w, h )
             draw.RoundedBox( 0, 0, 0, w, h, offColor ) -- Draw a blue button
         end
     elseif GetConVarNumber( "spambot" ) == 1 then
         SpamButton:SetText( "spam ON" )
-        SpamButton:SetTextColor( ButtonTextColorON )
         SpamButton.Paint = function( self, w, h )
             draw.RoundedBox( 0, 0, 0, w, h, onColor ) -- Draw a green button
         end
     end
+    SpamButton:SetTextColor( textColor )
     SpamButton:SetFont( "Trebuchet20" )
     SpamButton:SetPos( lineOne, rowTwo )
     SpamButton:SetSize( 100, 30 )
@@ -120,17 +114,16 @@ concommand.Add( "pizza_menu", function()
     local EspButton = vgui.Create( "DButton", Frame )
     if GetConVarNumber( "esp" ) == 0 then
         EspButton:SetText( "esp OFF" )
-        EspButton:SetTextColor( ButtonTextColorOFF )
         EspButton.Paint = function( self, w, h )
             draw.RoundedBox( 0, 0, 0, w, h, offColor )
         end
     elseif GetConVarNumber( "esp" ) == 1 then
         EspButton:SetText( "esp ON" )
-        EspButton:SetTextColor( ButtonTextColorON )
         EspButton.Paint = function( self, w, h )
             draw.RoundedBox( 0, 0, 0, w, h, onColor )
         end
     end
+    EspButton:SetTextColor( textColor )
     EspButton:SetFont( "Trebuchet20" )
     EspButton:SetPos( lineOne, rowThree )
     EspButton:SetSize( 100, 30 )
@@ -201,7 +194,7 @@ local function Bhop()
         if input.IsKeyDown(KEY_SPACE) then
             if LocalPlayer():OnGround() then
                 RunConsoleCommand("+jump")
-                timer.Create("Bhop", 0, 1, function()
+                timer.Create("Bhop", 0, 0.1, function()
                     RunConsoleCommand("-jump")
                 end )
             end
@@ -213,10 +206,14 @@ local function esp()
     if GetConVarNumber("esp") == 1 then
         for k, v in pairs ( player.GetAll() ) do
             local plypos = (v:GetPos() + Vector(0,0,40)):ToScreen()
-            if v:IsAdmin() or v:IsSuperAdmin() then
-                draw.DrawText( "" ..v:Name().. "\n" .. team.GetName(v:Team()) .. "\n[Admin]", "TabLarge", plypos.x, plypos.y, Color(220,60,90,255), 1 )
+            if v == LocalPlayer() then
+                draw.DrawText( "" , "TabLarge", plypos.x, plypos.y, Color(255,255,255), 1 )
+            elseif v:IsAdmin() or v:IsSuperAdmin() then
+                draw.DrawText( "" .. v:Name() .. "\n" .. team.GetName(v:Team()) .. "", "TabLarge", plypos.x, plypos.y, Color(255, 255,255), 1 )
+                plypos = (v:GetPos() + Vector(0,0,15)):ToScreen()
+                draw.DrawText( "" .. "\n[Admin]", "TabLarge", plypos.x, plypos.y, Color(220,60,90,255), 1 )
             else
-                draw.DrawText( v:Name() .. "\n" .. team.GetName(v:Team()), "Trebuchet18", plypos.x, plypos.y, Color(255,255,255), 1 )
+                draw.DrawText( v:Name() .. "\n" .. team.GetName(v:Team()), "TabLarge", plypos.x, plypos.y, Color(255,255,255), 1 )
             end
         end
     end

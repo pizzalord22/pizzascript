@@ -103,3 +103,13 @@ Category: Menus
 
 --- if an admin uses a command print it to everyone that has an higher rank
 --- if possible add the admins name when he uses a command eg: !ban player durationmsg+| kicked by (admin name)
+
+hook.Add("PlayerSay", "chat", function(ply, text, team )
+    if string.sub( text, 1,5 ) == "!menu" then
+        return  ply .. " opend the ulx menu"
+    elseif string.sub( text, 1, 2 ) == "//" or string.sub( text, 1, 4 ) == "/ooc" then
+        return "[OOC] " .. text
+    elseif string.sub( text, 1,3) == "///" or string.sub( text, 1,1 ) == "@" then
+        return "[ADMIN CHAT]" .. text
+    end
+end)
