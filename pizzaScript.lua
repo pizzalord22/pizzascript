@@ -205,19 +205,22 @@ local function Bhop()
 end
 
 
+--- create esp function
 --- test if plypos.y - 10 works instead of re assigning plypos
 local function esp()
     if GetConVarNumber("esp") == 1 then
         for k, v in pairs ( player.GetAll() ) do
-            local plypos = (v:GetPos() + Vector(0,0,40)):ToScreen()
-            if v == LocalPlayer() then
-                draw.DrawText( "" , "TabLarge", plypos.x, plypos.y, Color(255,255,255), 1 )
-            elseif v:IsAdmin() or v:IsSuperAdmin() then
-                draw.DrawText( "" .. v:Name() .. "\n" .. team.GetName(v:Team()) .. "", "TabLarge", plypos.x, plypos.y, Color(255, 255,255), 1 )
-                plypos = (v:GetPos() + Vector(0,0,15)):ToScreen()
-                draw.DrawText( "" .. "\n[Admin]", "TabLarge", plypos.x, plypos.y, Color(220,60,90,255), 1 )
-            else
-                draw.DrawText( v:Name() .. "\n" .. team.GetName(v:Team()), "TabLarge", plypos.x, plypos.y, Color(255,255,255), 1 )
+            if( LocalPlayer():GetPos():Distance( v:GetPos() ) < 3000) then
+                local plypos = (v:GetPos() + Vector(0,0,40)):ToScreen()
+                if v == LocalPlayer() then
+                    draw.DrawText( "" , "TabLarge", plypos.x, plypos.y, Color(255,255,255), 1 )
+                elseif v:IsAdmin() or v:IsSuperAdmin() then
+                    draw.DrawText( "" .. v:Name() .. "\n" .. team.GetName(v:Team()) .. "", "TabLarge", plypos.x, plypos.y, Color(255, 255,255), 1 )
+                    plypos = (v:GetPos() + Vector(0,0,15)):ToScreen()
+                    draw.DrawText( "" .. "\n[Admin]", "TabLarge", plypos.x, plypos.y, Color(220,60,90,255), 1 )
+                else
+                    draw.DrawText( v:Name() .. "\n" .. team.GetName(v:Team()), "TabLarge", plypos.x, plypos.y, Color(255,255,255), 1 )
+                end
             end
         end
     end

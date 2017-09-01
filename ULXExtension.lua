@@ -104,12 +104,32 @@ Category: Menus
 --- if an admin uses a command print it to everyone that has an higher rank
 --- if possible add the admins name when he uses a command eg: !ban player durationmsg+| kicked by (admin name)
 
-hook.Add("PlayerSay", "chat", function(ply, text, team )
+hook.Add("PlayerSay", "chat", function( ply, text, team )
     if string.sub( text, 1,5 ) == "!menu" then
         return  ply .. " opend the ulx menu"
     elseif string.sub( text, 1, 2 ) == "//" or string.sub( text, 1, 4 ) == "/ooc" then
-        return "[OOC] " .. text
-    elseif string.sub( text, 1,3) == "///" or string.sub( text, 1,1 ) == "@" then
-        return "[ADMIN CHAT]" .. text
+        return "[OOC" .. text
+    elseif string.sub( text, 1,3 ) == "///" or string.sub( text, 1,1 ) == "@" then
+        return "[ADMIN]" .. text
+    elseif string.sub( text, 1, 2 ) == "/y" then
+        return "[YELL]" .. text
+    elseif string.sub( text, 1, 2 ) == "/w" then
+        return "[WHISPER]" .. text
+    elseif string.sub( text, 1,  2 ) == "/a" or string.sub( text, 1, 7 ) == "/advert" then
+        return "[ADVERT]" .. text
+    elseif string.sub( text, 1, 6 ) == "/comms" then
+        return "[COMMS]" .. text
+    end
+end)
+
+hook.Add( "PhysgunDrop", "PhysgunDrop", function()
+    function GM:PhysgunDrop( ply, ent )
+        print( "player:" .. ply .. " dropped " .. ent)
+    end
+end)
+
+hook.Add( "EntityRemoved", "entityRemoved", function()
+    function GM:EntityRemoved( ent )
+        print( "Entity: " .. ent .. " was removed")
     end
 end)
