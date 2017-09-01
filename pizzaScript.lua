@@ -136,6 +136,7 @@ concommand.Add( "pizza_menu", function()
     SpamMessaage.OnEnter = function( self )
         RunConsoleCommand( "message", self:GetValue())
     end
+
     --- create an action to do when the Bhop button is pressed
     BhopButton.DoClick = function()
         if GetConVarNumber( "Bhop" ) == 0 then
@@ -170,19 +171,20 @@ concommand.Add( "pizza_menu", function()
         end
     end
 
+    --- create an action to do when the  esp button is clicked
     EspButton.DoClick = function()
         if GetConVarNumber( "esp" ) == 0 then
             EspButton:SetText( "esp ON" )
             EspButton.Paint = function( self, w, h)
                 draw.RoundedBox( 0, 0, 0, w, h, onColor)
             end
-            RunConsoleCommand( "esp", "1" )
+            RunConsoleCommand( "esp", "1" ) --- turns esp on
         elseif GetConVarNumber( "esp" ) == 1 then
             EspButton:SetText( "esp OFF" )
             EspButton.Paint = function( self, w, h )
                 draw.RoundedBox( 0, 0, 0, w, h, offColor)
             end
-            RunConsoleCommand( "esp", "0" )
+            RunConsoleCommand( "esp", "0" ) --- turns esp off
         end
     end
 
@@ -202,6 +204,8 @@ local function Bhop()
     end
 end
 
+
+--- test if plypos.y - 10 works instead of re assigning plypos
 local function esp()
     if GetConVarNumber("esp") == 1 then
         for k, v in pairs ( player.GetAll() ) do
