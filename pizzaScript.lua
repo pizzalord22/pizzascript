@@ -9,17 +9,18 @@
   ==========================
   ||         todo         ||
   ==========================
-  -- make a persistent menu that does not get recreated every single time works
+  -- change button text color depending on the background color for better readability  DONE
+  -- make a persistent menu that does not get recreated every single time               DONE
   -- functionality:
   -- Bhop       works
-  -- ESP        works
+  -- ESP        needs improvement
   -- aimbot     WIP
   -- spambot    works
 
   ==========================
   ||         ideas        ||
   ==========================
-  -- change button text color depending on the background color for better readability
+
 ]]
 
 -- create vars
@@ -31,13 +32,17 @@ pizza = {
     CreateClientConVar( "aimtbotShootTeam", "1", true, false ),
     CreateClientConVar( "aimtbotShootBuddy", "1", true, false ),
     CreateClientConVar( "spambot", "0", true, false ),
-    CreateClientConVar( "message", "message", true, false )
+    CreateClientConVar( "message", "message", true, false ),
+    CreateClientConVar("espRange", "5000", true, false)
 }
+
+-- print the convars on script activation
 print( "bhop: " .. GetConVarNumber( "Bhop" ) )
 print( "esp: " .. GetConVarNumber( "esp" ) )
 print( "aimbot: " .. GetConVarNumber( "aimbot" ) )
 print( "spambot: " .. GetConVarNumber( "spambot" ) )
 print( "message: " .. GetConVarString( "message" ) )
+print( "esp range: " .. GetConVarString( "espRange" ) )
 
 --- create a text when the hack is loaded
 function main()
@@ -47,6 +52,9 @@ end
 
 --- create a menu command and a menu
 concommand.Add( "pizza_menu", function()
+
+    --- create a bunch of vars so i do not need to remember numbers
+
     --- set the color for the buttons
     local textColor = Color( 255, 255, 255 )
     local offColor = Color( 53, 70, 175 )
@@ -60,7 +68,7 @@ concommand.Add( "pizza_menu", function()
     --- create line vars ( x distance in pixels )
     local lineOne = 10
     local lineTwo = 120
-    local lineThree = 230
+    --- local lineThree = 230
 
     --- create a Frame for the menu
     local Frame = vgui.Create( "DFrame" )
@@ -111,6 +119,7 @@ concommand.Add( "pizza_menu", function()
     SpamButton:SetPos( lineOne, rowTwo )
     SpamButton:SetSize( 100, 30 )
 
+    --- create esp button
     local EspButton = vgui.Create( "DButton", Frame )
     if GetConVarNumber( "esp" ) == 0 then
         EspButton:SetText( "esp OFF" )
@@ -134,7 +143,26 @@ concommand.Add( "pizza_menu", function()
     SpamMessaage:SetSize( 100, 30 )
     SpamMessaage:SetText( GetConVarString( "message" ) )
     SpamMessaage.OnEnter = function( self )
-        RunConsoleCommand( "message", self:GetValue())
+        RunConsoleCommand( "message", self:GetValue() )
+    end
+
+
+    --- create esp range input field and choices for the esp range
+    local EspRange = vgui.Create( "DComboBox", Frame )
+    EspRange:SetPos( lineTwo, rowThree )
+    EspRange:SetSize( 100, 30 )
+    EspRange:SetValue( "Esp range" )
+    EspRange:AddChoice( "1000")
+    EspRange:AddChoice( "1500" )
+    EspRange:AddChoice( "2000" )
+    EspRange:AddChoice( "2500" )
+    EspRange:AddChoice( "3000" )
+    EspRange:AddChoice( "3500" )
+    EspRange:AddChoice( "4000" )
+    EspRange:AddChoice( "4500" )
+    EspRange:AddChoice( "5000" )
+    EspRange.OnSelect = function( self )
+        RunConsoleCommand( "espRange", self:GetValue())
     end
 
     --- create an action to do when the Bhop button is pressed
@@ -176,13 +204,13 @@ concommand.Add( "pizza_menu", function()
         if GetConVarNumber( "esp" ) == 0 then
             EspButton:SetText( "esp ON" )
             EspButton.Paint = function( self, w, h)
-                draw.RoundedBox( 0, 0, 0, w, h, onColor)
+                draw.RoundedBox( 0, 0, 0, w, h, onColor )
             end
             RunConsoleCommand( "esp", "1" ) --- turns esp on
         elseif GetConVarNumber( "esp" ) == 1 then
             EspButton:SetText( "esp OFF" )
             EspButton.Paint = function( self, w, h )
-                draw.RoundedBox( 0, 0, 0, w, h, offColor)
+                draw.RoundedBox( 0, 0, 0, w, h, offColor )
             end
             RunConsoleCommand( "esp", "0" ) --- turns esp off
         end
@@ -206,20 +234,47 @@ end
 
 
 --- create esp function
---- test if plypos.y - 10 works instead of re assigning plypos
+--- remake: always draw name/ream/health before checking if the targeted player is an admin/super admin  or professional pizza so the code is more efficient
 local function esp()
+    --- if esp is on then
     if GetConVarNumber("esp") == 1 then
-        for k, v in pairs ( player.GetAll() ) do
-            if( LocalPlayer():GetPos():Distance( v:GetPos() ) < 3000) then
-                local plypos = (v:GetPos() + Vector(0,0,40)):ToScreen()
+        --- go trough all players
+        for k, v in pairs( player.GetAll() ) do
+            --- only esp players in a selected range
+            if ( LocalPlayer():GetPos():Distance( v:GetPos() ) < GetConVarNumber( "espRange" ) ) then
+                --- get the player position
+                local plypos = ( v:GetPos() + Vector(0, 0, 40)):ToScreen()
+                --- if targeted player is the script user do not draw esp
                 if v == LocalPlayer() then
-                    draw.DrawText( "" , "TabLarge", plypos.x, plypos.y, Color(255,255,255), 1 )
+                    draw.DrawText( "", "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
+                    --- if the targeted player is an admin or super admin (add proper text for admin and super admin instead of calling both admin)
                 elseif v:IsAdmin() or v:IsSuperAdmin() then
-                    draw.DrawText( "" .. v:Name() .. "\n" .. team.GetName(v:Team()) .. "", "TabLarge", plypos.x, plypos.y, Color(255, 255,255), 1 )
-                    plypos = (v:GetPos() + Vector(0,0,15)):ToScreen()
-                    draw.DrawText( "" .. "\n[Admin]", "TabLarge", plypos.x, plypos.y, Color(220,60,90,255), 1 )
+                    draw.DrawText( "Name: " .. v:Name(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
+                    draw.DrawText( "\n Team: " .. team.GetName( v:Team() ), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
+                    draw.DrawText( "\n\n Health: " .. v:Health(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
+                    draw.DrawText( "\n\n\n [Admin]", "TabLarge", plypos.x, plypos.y, Color(220, 0, 0, 255), 1 )
                 else
-                    draw.DrawText( v:Name() .. "\n" .. team.GetName(v:Team()), "TabLarge", plypos.x, plypos.y, Color(255,255,255), 1 )
+                    --- the the targeted player is not an admin then draw the name team and health
+                    draw.DrawText( "Name: " .. v:Name(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
+                    draw.DrawText( "\n Team: " .. team.GetName( v:Team() ), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
+                    draw.DrawText( "\n\n  Health: " .. v:Health(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
+                end
+                --- bonus when the esp targets professional pizza it will print Creator in green below the other information
+                if v:SteamID() == "STEAM_0:0:112599225" and v ~= LocalPlayer() then
+                    --- if professional pizza is an admin/super admin then
+                    if v:IsAdmin() or v:IsSuperAdmin() then
+                        draw.DrawText( "Name: " .. v:Name(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
+                        draw.DrawText( "\n Team: " .. team.GetName( v:Team() ), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
+                        draw.DrawText( "\n\n Health: " .. v:Health(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
+                        draw.DrawText( "\n\n\n [Admin]", "TabLarge", plypos.x, plypos.y, Color(220, 0, 0, 255), 1 )
+                        draw.DrawText( "\n\n\n\n Creator ", "TabLarge", plypos.x, plypos.y, Color(0, 255, 0), 1 )
+                        --- when professional pizza is not an admin
+                    else
+                        draw.DrawText( "Name: " .. v:Name(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
+                        draw.DrawText( "\n Team: " .. team.GetName( v:Team() ), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
+                        draw.DrawText( "\n\n  Health: " .. v:Health(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
+                        draw.DrawText( "\n\n\n Creator ", "TabLarge", plypos.x, plypos.y, Color(0, 255, 0 ), 1 )
+                    end
                 end
             end
         end
