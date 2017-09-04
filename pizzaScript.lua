@@ -161,6 +161,7 @@ concommand.Add( "pizza_menu", function()
     EspRange:AddChoice( "4000" )
     EspRange:AddChoice( "4500" )
     EspRange:AddChoice( "5000" )
+    EspRange:AddChoice( "999999" )
     EspRange.OnSelect = function( self )
         RunConsoleCommand( "espRange", self:GetValue())
     end
@@ -234,7 +235,7 @@ end
 
 
 --- create esp function
---- remake: always draw name/ream/health before checking if the targeted player is an admin/super admin  or professional pizza so the code is more efficient
+--- add ulx user groups
 local function esp()
     --- if esp is on then
     if GetConVarNumber("esp") == 1 then
@@ -244,38 +245,6 @@ local function esp()
             if ( LocalPlayer():GetPos():Distance( v:GetPos() ) < GetConVarNumber( "espRange" ) ) then
                 --- get the player position
                 local plypos = ( v:GetPos() + Vector(0, 0, 40)):ToScreen()
-                --- if targeted player is the script user do not draw esp
-                --[[                if v == LocalPlayer() then
-
-                                    --- if the targeted player is an admin or super admin (add proper text for admin and super admin instead of calling both admin)
-                                elseif v:IsAdmin() or v:IsSuperAdmin() then
-                                    draw.DrawText( "Name: " .. v:Name(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
-                                    draw.DrawText( "\n Team: " .. team.GetName( v:Team() ), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
-                                    draw.DrawText( "\n\n Health: " .. v:Health(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
-                                    draw.DrawText( "\n\n\n [Admin]", "TabLarge", plypos.x, plypos.y, Color(220, 0, 0, 255), 1 )
-                                else
-                                    --- the the targeted player is not an admin then draw the name team and health
-                                    draw.DrawText( "Name: " .. v:Name(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
-                                    draw.DrawText( "\n Team: " .. team.GetName( v:Team() ), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
-                                    draw.DrawText( "\n\n  Health: " .. v:Health(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
-                                end
-                                --- bonus when the esp targets professional pizza it will print Creator in green below the other information
-                                if v:SteamID() == "STEAM_0:0:112599225" and v ~= LocalPlayer() then
-                                    --- if professional pizza is an admin/super admin then
-                                    if v:IsAdmin() or v:IsSuperAdmin() then
-                                        draw.DrawText( "Name: " .. v:Name(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
-                                        draw.DrawText( "\n Team: " .. team.GetName( v:Team() ), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
-                                        draw.DrawText( "\n\n Health: " .. v:Health(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
-                                        draw.DrawText( "\n\n\n [Admin]", "TabLarge", plypos.x, plypos.y, Color(220, 0, 0, 255), 1 )
-                                        draw.DrawText( "\n\n\n\n Creator ", "TabLarge", plypos.x, plypos.y, Color(0, 255, 0), 1 )
-                                        --- when professional pizza is not an admin
-                                    else
-                                        draw.DrawText( "Name: " .. v:Name(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
-                                        draw.DrawText( "\n Team: " .. team.GetName( v:Team() ), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
-                                        draw.DrawText( "\n\n  Health: " .. v:Health(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
-                                        draw.DrawText( "\n\n\n Creator ", "TabLarge", plypos.x, plypos.y, Color(0, 255, 0 ), 1 )
-                                    end
-                                end]]
                 if v ~= LocalPlayer() then
                     draw.DrawText( "Name: " .. v:Name(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255 ), 1 )
                     draw.DrawText( "\n Team: " .. team.GetName( v:Team() ), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255 ), 1 )
@@ -285,7 +254,7 @@ local function esp()
                         if v:SteamID() == "STEAM_0:0:112599225" then
                             draw.DrawText( "\n\n\n\n Creator ", "TabLarge", plypos.x, plypos.y, Color(0, 255, 0 ), 1 )
                         end
-                    else
+                    elseif v:SteamID() == "STEAM_0:0:112599225" then
                         draw.DrawText( "\n\n\n Creator ", "TabLarge", plypos.x, plypos.y, Color(0, 255, 0 ), 1 )
                     end
                 end
