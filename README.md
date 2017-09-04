@@ -5,3 +5,4 @@ this script has the following.
 1. Bhop
 2. Chat spam
 3. Esp 
+4. Custom esp range
