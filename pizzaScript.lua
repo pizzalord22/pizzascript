@@ -264,6 +264,8 @@ local function esp()
             end
         end
     end
+    local showvel = math.floor(LocalPlayer():GetVelocity():Length())
+    draw.DrawText( "SPEED: " .. showvel, "CloseCaption_Bold" , ScrW()/2, ScrH()/1.04, Color(255, 116, 0, 255 ) )
 end
 
 --- create aimbot function
@@ -296,4 +298,3 @@ hook.Add( "Think", "BunnyHop", Bhop )
 hook.Add( "Think", "aimbot", aimbot )
 hook.Add( "Think", "spambot", spambot )
 hook.Add( "HUDPaint", "esp", esp )
-print( LocalPlayer():GetUserGroup() )
