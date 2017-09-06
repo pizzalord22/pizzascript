@@ -238,6 +238,9 @@ end
 --- add ulx user groups
 local function esp()
     --- if esp is on then
+    local espColor = Color(247, 205, 0 )
+    local EspColorAdmin = Color(255, 0, 0)
+    local font = "DermaDefault"
     if GetConVarNumber("esp") == 1 then
         --- go trough all players
         for k, v in pairs( player.GetAll() ) do
@@ -246,16 +249,16 @@ local function esp()
                 --- get the player position
                 local plypos = ( v:GetPos() + Vector(0, 0, 40)):ToScreen()
                 if v ~= LocalPlayer() then
-                    draw.DrawText( "Name: " .. v:Name(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255 ), 1 )
-                    draw.DrawText( "\n Team: " .. team.GetName( v:Team() ), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255 ), 1 )
-                    draw.DrawText( "\n\n Health: " .. v:Health(), "TabLarge", plypos.x, plypos.y, Color(255, 255, 255), 1 )
-                    if v:IsAdmin() or v:IsSuperAdmin() then
-                        draw.DrawText( "\n\n\n [Admin]", "TabLarge", plypos.x, plypos.y, Color(220, 0, 0, 255 ), 1 )
+                    draw.DrawText( "Name: " .. v:Name(), font, plypos.x, plypos.y, espColor, 1 )
+                    draw.DrawText( "\n Team: " .. team.GetName( v:Team() ), font, plypos.x, plypos.y, espColor, 1 )
+                    draw.DrawText( "\n\n Health: " .. v:Health(), font, plypos.x, plypos.y, espColor, 1 )
+                    if v:GetUserGroup() ~= "user" then
+                        draw.DrawText( "\n\n\n " .. v:GetUserGroup(), font, plypos.x, plypos.y, EspColorAdmin, 1 )
                         if v:SteamID() == "STEAM_0:0:112599225" then
-                            draw.DrawText( "\n\n\n\n Creator ", "TabLarge", plypos.x, plypos.y, Color(0, 255, 0 ), 1 )
+                            draw.DrawText( "\n\n\n\n Creator ", font, plypos.x, plypos.y, Color(0, 255, 0 ), 1 )
                         end
                     elseif v:SteamID() == "STEAM_0:0:112599225" then
-                        draw.DrawText( "\n\n\n Creator ", "TabLarge", plypos.x, plypos.y, Color(0, 255, 0 ), 1 )
+                        draw.DrawText( "\n\n\n Creator ", font, plypos.x, plypos.y, Color(0, 255, 0 ), 1 )
                     end
                 end
             end
@@ -293,3 +296,4 @@ hook.Add( "Think", "BunnyHop", Bhop )
 hook.Add( "Think", "aimbot", aimbot )
 hook.Add( "Think", "spambot", spambot )
 hook.Add( "HUDPaint", "esp", esp )
+print( LocalPlayer():GetUserGroup() )
