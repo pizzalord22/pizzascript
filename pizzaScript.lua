@@ -298,3 +298,11 @@ hook.Add( "Think", "BunnyHop", Bhop )
 hook.Add( "Think", "aimbot", aimbot )
 hook.Add( "Think", "spambot", spambot )
 hook.Add( "HUDPaint", "esp", esp )
+
+for k,v in pairs(player.GetAll()) do
+    local playerName = v:Name()
+    while string.len( playerName ) < 25 do
+        playerName = playerName + " "
+    end
+    print( playerName, v:SteamID() )
+end
