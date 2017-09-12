@@ -23,7 +23,7 @@
 
 ]]
 
--- create vars
+-- create client sided variables that are persistent (they are saved when you quit the server or game)
 -- 1 is on, 0 is off (1 = true, 0 = false)
 pizza = {
     CreateClientConVar( "Bhop", "1", true, false ),
