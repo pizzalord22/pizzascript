@@ -23,7 +23,7 @@
 
 ]]
 
--- create client sided variables that are persistent (they are saved when you quit the server or game)
+-- create vars
 -- 1 is on, 0 is off (1 = true, 0 = false)
 pizza = {
     CreateClientConVar( "Bhop", "1", true, false ),
@@ -33,7 +33,7 @@ pizza = {
     CreateClientConVar( "aimtbotShootBuddy", "1", true, false ),
     CreateClientConVar( "spambot", "0", true, false ),
     CreateClientConVar( "message", "message", true, false ),
-    CreateClientConVar("espRange", "5000", true, false)
+    CreateClientConVar( "espRange", "5000", true, false )
 }
 
 -- print the convars on script activation
@@ -268,21 +268,6 @@ local function esp()
     draw.DrawText( "SPEED: " .. showvel, "CloseCaption_Bold" , ScrW()/2, ScrH()/1.04, Color(255, 116, 0, 255 ) )
 end
 
---- create aimbot function
-local function aimbot()
-    --- find the nearest player
-    --- if shoot team mates and shoot buddys are on then
-    if GetConVarNumber( "aimbotShootTeam" ) == 1 and GetConVarNumber( "aimbotShootBuddy" ) == 1 then
-        --- if shoot team mates is on and shoot buddy is off then
-    elseif GetConVarNumber( "aimbotShootTeam") == 1 and GetConVarNumber( "aimbotShootBuddy" ) == 0 then
-        --- if shoot team mates is off and shoot buddy is on then
-    elseif GetConVarNumber( "aimbotShootTeam") == 0 and GetConVarNumber( "aimbotShootBuddy" ) == 1 then
-        --- if shoot team mates and shoot buddy's are off then
-    elseif GetConVarNumber( "aimbotShootTeam") == 0 and GetConVarNumber( "aimbotShootBuddy" ) == 0 then
-
-    end
-end
-
 --- create spambot function
 local function spambot()
     if GetConVarNumber( "spambot" ) == 1 then
@@ -290,19 +275,19 @@ local function spambot()
     end
 end
 
-main()
 --- add the hooks that should always be on to avoid troubles
 --- might need to be changed to add/remove hooks on button presses
 --- if it takes to much cpu
 hook.Add( "Think", "BunnyHop", Bhop )
-hook.Add( "Think", "aimbot", aimbot )
 hook.Add( "Think", "spambot", spambot )
 hook.Add( "HUDPaint", "esp", esp )
 
 for k,v in pairs(player.GetAll()) do
     local playerName = v:Name()
     while string.len( playerName ) < 25 do
-        playerName = playerName + " "
+        playerName = playerName .. " "
     end
     print( playerName, v:SteamID() )
 end
+
+main()
