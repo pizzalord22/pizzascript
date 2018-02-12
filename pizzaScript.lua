@@ -13,7 +13,7 @@
   -- make a persistent menu that does not get recreated every single time               DONE
   -- functionality:
   -- Bhop       works
-  -- ESP        needs improvement
+  -- ESP        works
   -- aimbot     WIP
   -- spambot    works
 
